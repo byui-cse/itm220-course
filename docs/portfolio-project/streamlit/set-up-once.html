@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Set Up Once — Streamlit</title><link rel="stylesheet" href="style.css"></head>
+<body><header><div><h1>Set Up Once</h1><p class="lead">Prepare your computer to run a small Streamlit page that talks to your local MySQL database.</p></div></header>
+<main><nav><a href="index.html">Start Here</a><a href="set-up-once.html">Set Up Once</a><a href="puppies-walkthrough.html">Puppies Walkthrough</a><a href="plan-your-app.html">Plan Your App</a><a href="build-your-app.html">Build Your App</a><a href="quick-help.html">Quick Help</a></nav>
+
+<div class="notice"><strong>This is a one-time computer setup.</strong> You are not expected to understand Python. Follow the command box for your operating system exactly. When it works, you will use the same short run command for the rest of the course.</div>
+
+<h2>What you are setting up</h2><p>You will create a private project folder with its own Python environment, install two small packages, and run a prepared Puppies web page. The page runs only on your computer and connects only to MySQL on your computer.</p>
+<div class="cards"><section class="card"><h3>You need</h3><ul><li>Your local MySQL server running</li><li>The current <code>puppies</code> schema loaded</li><li>Your own MySQL username and password</li><li>A laptop with VS Code and Python</li></ul></section><section class="card"><h3>You do not need</h3><ul><li>Prior Python experience</li><li>A GitHub account</li><li>To deploy a public website</li><li>To put your MySQL password in a code file</li></ul></section></div>
+
+<h2>1. Get the two free tools</h2><ol><li>Install or open <a href="https://code.visualstudio.com/download" target="_blank" rel="noopener">Visual Studio Code</a>.</li><li>Install <a href="https://www.python.org/downloads/" target="_blank" rel="noopener">Python</a> if it is not already installed. Current Streamlit supports Python 3.10–3.14; choose a current Python 3 release.</li><li>In VS Code, install the Microsoft <strong>Python</strong> extension if VS Code asks you to. It helps VS Code recognize the project environment you create below.</li></ol>
+<div class="tip"><strong>Windows installer note:</strong> if the Python installer offers an option to add Python to PATH, select it. Then fully close and reopen VS Code after the install.</div>
+
+<h2>2. Make one project folder</h2><ol><li>Create a folder somewhere easy to find, such as <code>Documents/sql_frontend</code>.</li><li>Download <a href="starter-files/puppies_frontend_demo.py" download>puppies_frontend_demo.py</a> and place it in that folder.</li><li>In VS Code, choose <strong>File → Open Folder…</strong> and open <code>sql_frontend</code>.</li><li>Choose <strong>Terminal → New Terminal</strong>.</li></ol>
+
+<h2>3. Follow one path for your computer</h2><p>Copy one command at a time into the terminal, press Enter, and wait for it to finish before entering the next command.</p>
+
+<section class="card"><h3>Windows 10 or 11</h3><p>First, check which Python command your computer recognizes:</p><pre>py --version</pre><p>If that reports Python, use the commands below. If it does not, try <code>python --version</code> and replace only the first command below with <code>python -m venv .venv</code>.</p><pre>py -3 -m venv .venv
+.\.venv\Scripts\python.exe -m pip install --upgrade pip
+.\.venv\Scripts\python.exe -m pip install streamlit mysql-connector-python
+.\.venv\Scripts\python.exe -m streamlit run puppies_frontend_demo.py</pre><p>The last command should open a page in your browser. Leave the terminal running while you use the page.</p></section>
+
+<section class="card"><h3>macOS</h3><p>First, check that Python is available:</p><pre>python3 --version</pre><p>Then run:</p><pre>python3 -m venv .venv
+./.venv/bin/python -m pip install --upgrade pip
+./.venv/bin/python -m pip install streamlit mysql-connector-python
+./.venv/bin/python -m streamlit run puppies_frontend_demo.py</pre><p>The last command should open a page in your browser. Leave the terminal running while you use the page.</p><p>If the package installation reports that Apple command-line developer tools are missing, run <code>xcode-select --install</code>, finish Apple’s installation prompt, reopen VS Code, and repeat the package-install command.</p></section>
+
+<div class="tip"><strong>Why these commands look longer than usual:</strong> they intentionally use the Python inside this project’s <code>.venv</code> folder. That keeps this project’s packages together, avoids the Windows “scripts are disabled” problem, and prevents Streamlit from being installed into the wrong Python location.</div>
+
+<h2>4. Prove the setup worked</h2><ol><li>In the browser page, open the <strong>Connection</strong> panel on the left.</li><li>Leave the host as <code>127.0.0.1</code> and port as <code>3306</code>, unless your MySQL server uses a different port.</li><li>Enter the MySQL username and password that work on your own computer.</li><li>Select <strong>Test connection</strong>.</li><li>When you see “Connected to the Puppies database,” continue to the <a href="puppies-walkthrough.html">Puppies Front-End Walkthrough</a>.</li></ol>
+<p>Your password is typed into a page running on your own computer. It is not saved in the starter file or sent to GitHub.</p>
+
+<h2>Next time you open the project</h2><p>You do <strong>not</strong> need to install packages again. Open the same folder in VS Code, open a terminal, and use only the final command for your operating system:</p><table><thead><tr><th>Windows</th><th>macOS</th></tr></thead><tbody><tr><td><code>.\.venv\Scripts\python.exe -m streamlit run puppies_frontend_demo.py</code></td><td><code>./.venv/bin/python -m streamlit run puppies_frontend_demo.py</code></td></tr></tbody></table>
+<p>To stop the page, return to the terminal and press <code>Ctrl+C</code>. If the browser says the address is already in use, Streamlit is probably still running in another terminal; find that terminal and press <code>Ctrl+C</code> there.</p>
+
+<h2>Common first-time issues</h2><table><thead><tr><th>What happened?</th><th>What to do</th></tr></thead><tbody><tr><td><code>py</code>, <code>python</code>, or <code>python3</code> is not recognized</td><td>Install Python from python.org, ensure the Windows PATH option was selected, then close and reopen VS Code.</td></tr><tr><td><code>No module named streamlit</code></td><td>Use the full project command above—not just <code>streamlit run</code>. It always uses the right environment.</td></tr><tr><td>Connection failed</td><td>Make sure MySQL is running. Check the port, username, password, and that the database is named <code>puppies</code>.</td></tr><tr><td>MySQL is on port 3307</td><td>Change only the port in the page’s Connection panel to <code>3307</code>.</td></tr></tbody></table>
+
+<h2>Why this guide is different</h2><p>This guide keeps the spirit of the earlier setup tutorial but uses the current recommended <code>venv</code> and <code>pip</code> approach from Streamlit, a project-local environment that VS Code can discover automatically, and the official MySQL Connector/Python package. The original <a href="https://docs.google.com/document/d/1yvVtupVTbzNU26dzpMY9J9HYWhuZ-o8DmA2WIcC627M/edit?usp=sharing" target="_blank" rel="noopener">Streamlit Setup</a> guide remains available as a reference.</p>
+</main><footer>ITM 220 &middot; Draft resource for review</footer></body></html>
