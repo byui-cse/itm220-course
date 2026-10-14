@@ -1,0 +1,409 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Sakila Streaming — Student ERD Reference</title>
+  <style>
+    :root {
+      --ink: #172033;
+      --muted: #5d6677;
+      --paper: #f6f8fc;
+      --panel: #ffffff;
+      --line: #dbe1ec;
+      --blue: #0b5cad;
+      --blue-soft: #e8f2ff;
+      --green: #027a48;
+      --green-soft: #e8f7ef;
+      --purple: #6b3fa0;
+      --purple-soft: #f1eafd;
+      --orange: #b54708;
+      --orange-soft: #fff3e8;
+      --shadow: 0 10px 28px rgba(25, 40, 70, .08);
+    }
+
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      color: var(--ink);
+      background: var(--paper);
+      font-family: Inter, Aptos, "Segoe UI", Arial, sans-serif;
+      line-height: 1.45;
+    }
+
+    .page { max-width: 1550px; margin: 0 auto; padding: 30px 26px 50px; }
+    .hero {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      gap: 20px;
+      align-items: start;
+      padding: 30px;
+      border-radius: 22px;
+      color: #fff;
+      background: linear-gradient(135deg, #073b72 0%, #0d6cae 58%, #16849b 100%);
+      box-shadow: var(--shadow);
+    }
+    .eyebrow { margin: 0 0 7px; font-size: .78rem; font-weight: 800; letter-spacing: .09em; text-transform: uppercase; opacity: .84; }
+    h1 { margin: 0; font-size: clamp(2rem, 4vw, 3.25rem); line-height: 1.05; letter-spacing: -.035em; }
+    .subtitle { max-width: 780px; margin: 14px 0 0; font-size: 1.08rem; opacity: .94; }
+    .hero-note { max-width: 265px; padding: 14px 16px; border: 1px solid rgba(255,255,255,.3); border-radius: 14px; background: rgba(0,0,0,.12); font-size: .9rem; }
+    .hero-note strong { display: block; margin-bottom: 3px; }
+
+    .quick-start, .guide, .detail-panel, .path-card, .faq-card {
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      background: var(--panel);
+      box-shadow: 0 3px 14px rgba(25, 40, 70, .04);
+    }
+    .quick-start { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 15px; align-items: center; margin: 22px 0; padding: 18px 20px; }
+    .quick-start .number { display: grid; place-items: center; width: 42px; height: 42px; border-radius: 50%; color: #07552f; background: #dff7e8; font-weight: 850; }
+    .quick-start p { margin: 0; }
+    .quick-start strong { color: var(--green); }
+
+    h2 { margin: 0; font-size: 1.35rem; letter-spacing: -.018em; }
+    h3 { margin: 0; font-size: 1rem; }
+    .workspace { display: grid; grid-template-columns: 250px minmax(0, 1fr) 300px; gap: 18px; align-items: start; }
+    .guide, .detail-panel { padding: 18px; }
+    .guide { position: sticky; top: 18px; }
+    .guide h2, .detail-panel h2 { margin-bottom: 12px; }
+    .guide p, .detail-panel p { margin: 8px 0; color: var(--muted); font-size: .93rem; }
+    .guide ol { margin: 12px 0 0; padding-left: 19px; }
+    .guide li { margin: 9px 0; font-size: .92rem; }
+    .legend { display: grid; gap: 8px; margin-top: 17px; padding-top: 16px; border-top: 1px solid var(--line); }
+    .legend-row { display: flex; gap: 9px; align-items: center; font-size: .87rem; color: var(--muted); }
+    .key { display: inline-flex; min-width: 29px; justify-content: center; padding: 2px 5px; border-radius: 4px; font-size: .68rem; font-weight: 850; letter-spacing: .02em; }
+    .key.pk { color: #07552f; background: #dff7e8; }
+    .key.fk { color: #75430a; background: #fff0d6; }
+    .key.both { color: #5a2992; background: #eee2fb; }
+
+    .map-area { min-width: 0; }
+    .toolbar { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; margin: 0 0 12px; }
+    .search-wrap { flex: 1 1 215px; position: relative; }
+    .search-wrap input { width: 100%; padding: 11px 12px 11px 37px; border: 1px solid #bdc9da; border-radius: 10px; outline: none; font: inherit; background: #fff; }
+    .search-wrap input:focus { border-color: var(--blue); box-shadow: 0 0 0 3px rgba(11,92,173,.14); }
+    .search-icon { position: absolute; left: 12px; top: 10px; color: #667085; }
+    .filters { display: flex; flex-wrap: wrap; gap: 6px; }
+    .filter {
+      border: 1px solid #bdc9da;
+      border-radius: 99px;
+      padding: 8px 11px;
+      color: #344054;
+      background: #fff;
+      font: 700 .78rem/1 inherit;
+      cursor: pointer;
+    }
+    .filter:hover, .filter[aria-pressed="true"] { color: #fff; border-color: var(--blue); background: var(--blue); }
+    .status { width: 100%; margin: 0; font-size: .82rem; color: var(--muted); }
+
+    .diagram {
+      position: relative;
+      min-height: 1160px;
+      overflow: auto;
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      background: linear-gradient(90deg, rgba(11,92,173,.035) 1px, transparent 1px), linear-gradient(rgba(11,92,173,.035) 1px, transparent 1px), #fff;
+      background-size: 24px 24px;
+      box-shadow: var(--shadow);
+    }
+    #connections { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; overflow: visible; z-index: 1; }
+    .edge { fill: none; stroke: #98a9bf; stroke-width: 1.35; opacity: .72; }
+    .edge.highlight { stroke: #0b5cad; stroke-width: 2.5; opacity: 1; }
+    .edge-label { fill: #536174; font-size: 10px; font-weight: 750; paint-order: stroke; stroke: #fff; stroke-width: 3px; stroke-linejoin: round; }
+    #cards { position: relative; z-index: 2; display: grid; grid-template-columns: repeat(4, minmax(205px, 1fr)); gap: 22px; min-width: 980px; padding: 24px; }
+    .table-card {
+      width: 100%; padding: 0; overflow: hidden; border: 1px solid #c9d4e4; border-radius: 11px; color: var(--ink); text-align: left; background: #fff; box-shadow: 0 3px 8px rgba(30, 45, 75, .09); font: inherit; cursor: pointer; transition: transform .14s ease, box-shadow .14s ease, opacity .14s ease;
+    }
+    .table-card:hover, .table-card:focus-visible { z-index: 3; outline: none; transform: translateY(-2px); box-shadow: 0 8px 18px rgba(30, 45, 75, .16); }
+    .table-card.is-selected { border: 3px solid var(--blue); box-shadow: 0 0 0 4px rgba(11,92,173,.14), 0 8px 18px rgba(30, 45, 75, .16); }
+    .table-card.is-muted { opacity: .28; }
+    .table-card.is-hidden { display: none; }
+    .table-head { display: flex; align-items: center; justify-content: space-between; gap: 8px; padding: 9px 11px; color: #173a5e; background: var(--blue-soft); }
+    .table-head.people { color: #07552f; background: var(--green-soft); }
+    .table-head.catalog { color: #593281; background: var(--purple-soft); }
+    .table-head.activity { color: #97400b; background: var(--orange-soft); }
+    .table-name { font-family: ui-monospace, SFMono-Regular, Consolas, monospace; font-size: .95rem; font-weight: 850; }
+    .table-kind { font-size: .64rem; font-weight: 850; letter-spacing: .06em; text-transform: uppercase; opacity: .72; }
+    .table-fields { padding: 7px 0; }
+    .field { display: grid; grid-template-columns: 35px minmax(0, 1fr); gap: 5px; padding: 2px 10px; font-family: ui-monospace, SFMono-Regular, Consolas, monospace; font-size: .73rem; line-height: 1.35; }
+    .field-key { align-self: start; padding-top: 1px; font-family: Inter, Aptos, sans-serif; font-size: .56rem; font-weight: 900; letter-spacing: .02em; color: transparent; }
+    .field-key.pk { color: #07552f; }
+    .field-key.fk { color: #9a5b0d; }
+    .field-key.both { color: #6b3fa0; }
+    .field-name { overflow-wrap: anywhere; }
+
+    .detail-panel { position: sticky; top: 18px; min-height: 315px; }
+    .detail-kicker { margin: 0 0 5px; color: var(--blue); font-size: .73rem; font-weight: 850; letter-spacing: .07em; text-transform: uppercase; }
+    .detail-name { font-family: ui-monospace, SFMono-Regular, Consolas, monospace; font-size: 1.3rem; }
+    .connection-list { margin: 15px 0 0; padding: 0; list-style: none; }
+    .connection-list li { margin: 7px 0; color: var(--muted); font-size: .85rem; }
+    .connection-list code { color: #26466d; font-weight: 700; }
+    .empty-detail { margin: 20px 0 0 !important; }
+
+    .bottom { display: grid; grid-template-columns: 1.35fr 1fr; gap: 18px; margin-top: 22px; }
+    .paths, .faq { padding: 20px; }
+    .paths > p, .faq > p { margin: 7px 0 16px; color: var(--muted); }
+    .path-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+    .path-card { padding: 15px; }
+    .path-card h3 { color: #163f6e; }
+    .path-card p { margin: 7px 0 0; color: var(--muted); font-size: .88rem; }
+    .path { margin: 10px 0 0; color: #334155; font-family: ui-monospace, SFMono-Regular, Consolas, monospace; font-size: .76rem; font-weight: 700; line-height: 1.7; }
+    .arrow { color: var(--blue); }
+    .faq-card { padding: 15px; margin: 11px 0 0; }
+    .faq-card p { margin: 6px 0 0; color: var(--muted); font-size: .88rem; }
+    footer { margin-top: 20px; color: #657184; font-size: .78rem; text-align: center; }
+
+    @media (max-width: 1180px) {
+      .workspace { grid-template-columns: 230px minmax(0, 1fr); }
+      .detail-panel { grid-column: 1 / -1; position: static; }
+      .detail-panel .connection-list { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); column-gap: 16px; }
+    }
+    @media (max-width: 770px) {
+      .page { padding: 14px 12px 30px; }
+      .hero, .workspace, .bottom { grid-template-columns: 1fr; }
+      .hero { padding: 22px; }
+      .hero-note { max-width: none; }
+      .guide { position: static; }
+      .path-grid { grid-template-columns: 1fr; }
+      .detail-panel .connection-list { display: block; }
+      .diagram { min-height: 980px; }
+    }
+    @media print {
+      body { background: white; }
+      .page { max-width: none; padding: 0; }
+      .toolbar, .quick-start { display: none; }
+      .hero { color: #111; background: white; box-shadow: none; border: 1px solid #bbb; }
+      .hero-note { border-color: #bbb; background: #f5f5f5; }
+      .workspace { display: block; }
+      .guide, .detail-panel, .bottom { display: none; }
+      .diagram { border: none; box-shadow: none; overflow: visible; }
+      #cards { min-width: 0; grid-template-columns: repeat(4, 1fr); padding: 0; gap: 8px; }
+      .table-card { break-inside: avoid; box-shadow: none; }
+    }
+  </style>
+</head>
+<body>
+  <main class="page">
+    <header class="hero">
+      <div>
+        <p class="eyebrow">ITM 220 • Student Reference</p>
+        <h1>Sakila Streaming<br>Database Map</h1>
+        <p class="subtitle">An interactive entity-relationship diagram (ERD) for planning your reporting queries. Click any table to learn what it represents and how its keys connect to the rest of the database.</p>
+      </div>
+      <div class="hero-note"><strong>Use this while reporting</strong>Start with the result you need, then follow the relationship path between tables. The filters make a busy schema much easier to read.</div>
+    </header>
+
+    <section class="quick-start" aria-label="A good way to begin">
+      <div class="number">1</div>
+      <p><strong>Begin with your question, not with a table.</strong> Identify the information you must display, find its table, then trace the foreign-key path to the other information your report needs.</p>
+    </section>
+
+    <section class="workspace" aria-label="Interactive ERD">
+      <aside class="guide">
+        <h2>How to use this reference</h2>
+        <p>Use this while planning a reporting query. You do not need to memorize the schema.</p>
+        <ol>
+          <li><strong>Click a table that seems related to your question.</strong> The panel on the right explains what the table represents and shows its exact relationships and join fields.</li>
+          <li>Ask yourself: <em>What information do I need to show?</em> For example, a customer’s name, a film title, or a rental date.</li>
+          <li>Use the search box or a focused view, such as <strong>Rentals</strong> or <strong>Purchases &amp; library</strong>, to find the other tables you need.</li>
+          <li><strong>Follow a relationship before writing your query.</strong> Match the foreign key to its related key—for example, <code>rental.inventory_id</code> connects to <code>inventory.inventory_id</code>.</li>
+          <li>Write down the table path first, then build your <code>JOIN</code> statements one connection at a time.</li>
+        </ol>
+        <div class="legend" aria-label="Key legend">
+          <div class="legend-row"><span class="key pk">PK</span> Primary key: uniquely identifies one row.</div>
+          <div class="legend-row"><span class="key fk">FK</span> Foreign key: points to a row in another table.</div>
+          <div class="legend-row"><span class="key both">PK/FK</span> A key field that is both part of the primary key and a connection.</div>
+        </div>
+      </aside>
+
+      <section class="map-area">
+        <div class="toolbar">
+          <label class="search-wrap"><span class="search-icon" aria-hidden="true">⌕</span><input id="search" type="search" placeholder="Find a table or column…" aria-label="Find a table or column"></label>
+          <div class="filters" aria-label="Show a focused view">
+            <button class="filter" type="button" data-filter="all" aria-pressed="true">All tables</button>
+            <button class="filter" type="button" data-filter="people" aria-pressed="false">Customers</button>
+            <button class="filter" type="button" data-filter="catalog" aria-pressed="false">Catalog</button>
+            <button class="filter" type="button" data-filter="rental" aria-pressed="false">Rentals</button>
+            <button class="filter" type="button" data-filter="purchase" aria-pressed="false">Purchases &amp; library</button>
+          </div>
+          <p class="status" id="status" aria-live="polite"></p>
+        </div>
+        <div class="diagram" id="diagram" aria-label="Sakila Streaming ERD diagram">
+          <svg id="connections" aria-hidden="true"></svg>
+          <div id="cards"></div>
+        </div>
+      </section>
+
+      <aside class="detail-panel" id="detail" aria-live="polite">
+        <p class="detail-kicker">Explore the diagram</p>
+        <h2>Choose a table</h2>
+        <p class="empty-detail">Click a table card to see why it exists and the exact keys you can use to join it.</p>
+      </aside>
+    </section>
+
+    <section class="bottom">
+      <section class="paths guide">
+        <h2>High-value reporting paths</h2>
+        <p>These are common routes through the schema. They are not the only correct routes, but they are a good place to start.</p>
+        <div class="path-grid">
+          <article class="path-card"><h3>What did a customer rent?</h3><p class="path"><code>customer</code> <span class="arrow">→</span> <code>rental</code> <span class="arrow">→</span> <code>inventory</code> <span class="arrow">→</span> <code>film</code></p></article>
+          <article class="path-card"><h3>What did a customer buy?</h3><p class="path"><code>customer</code> <span class="arrow">→</span> <code>purchase</code> <span class="arrow">→</span> <code>purchase_item</code> <span class="arrow">→</span> <code>film</code></p></article>
+          <article class="path-card"><h3>What is in a customer’s library?</h3><p class="path"><code>customer</code> <span class="arrow">→</span> <code>customer_library</code> <span class="arrow">→</span> <code>film</code></p></article>
+          <article class="path-card"><h3>Who appeared in a film?</h3><p class="path"><code>film</code> <span class="arrow">→</span> <code>film_actor</code> <span class="arrow">→</span> <code>actor</code></p></article>
+          <article class="path-card"><h3>Which category is a film in?</h3><p class="path"><code>film</code> <span class="arrow">→</span> <code>film_category</code> <span class="arrow">→</span> <code>category</code></p></article>
+          <article class="path-card"><h3>Which provider offers a title?</h3><p class="path"><code>provider</code> <span class="arrow">→</span> <code>inventory</code> <span class="arrow">→</span> <code>film</code></p></article>
+        </div>
+      </section>
+
+      <section class="faq guide">
+        <h2>Details that matter</h2>
+        <article class="faq-card"><h3>Why is <code>inventory</code> between rentals and films?</h3><p>An inventory row records that a specific provider offers a specific film. A rental points to that provider-title listing through <code>inventory_id</code>.</p></article>
+        <article class="faq-card"><h3>Why are there two small “film_…” tables?</h3><p><code>film_actor</code> and <code>film_category</code> are junction tables. They let one film have many actors or categories, and let one actor or category connect to many films.</p></article>
+        <article class="faq-card"><h3>How are purchases different from a library?</h3><p><code>purchase</code> is the order, <code>purchase_item</code> is each film on that order, and <code>customer_library</code> is the resulting film access for a customer.</p></article>
+      </section>
+    </section>
+
+    <footer>Built from the current <code>sakila_streaming.sql</code> course schema. Use the exact table and column names shown here in your queries.</footer>
+  </main>
+
+  <script>
+    const tables = [
+      { name: 'actor', group: 'catalog', kind: 'Catalog', purpose: 'One performer. Use this when a report needs an actor’s name.', columns: ['actor_id','first_name','last_name','last_update'], pk: ['actor_id'] },
+      { name: 'address', group: 'people', kind: 'Customer', purpose: 'A street address for a customer. Each address belongs to one city.', columns: ['address_id','address','address2','state','city_id','postal_code','offset','last_update'], pk: ['address_id'], fk: { city_id: ['city','city_id'] } },
+      { name: 'credit_card', group: 'people', kind: 'Customer', purpose: 'A saved payment card owned by a customer. Rentals, purchases, and subscriptions can use it.', columns: ['card_id','owner_id','card_number','card_type','card_expiry_date','last_update'], pk: ['card_id'], fk: { owner_id: ['customer','customer_id'] } },
+      { name: 'category', group: 'catalog', kind: 'Catalog', purpose: 'A film category such as a genre. Connect through film_category, not directly to film.', columns: ['category_id','name','last_update'], pk: ['category_id'] },
+      { name: 'city', group: 'people', kind: 'Customer', purpose: 'A city in a customer address. Each city belongs to one country.', columns: ['city_id','city','country_id','last_update'], pk: ['city_id'], fk: { country_id: ['country','country_id'] } },
+      { name: 'country', group: 'people', kind: 'Customer', purpose: 'A country used in the address hierarchy.', columns: ['country_id','country','country_slag','last_update'], pk: ['country_id'] },
+      { name: 'customer', group: 'people', kind: 'Customer', purpose: 'One streaming customer. This is the usual starting point for customer activity reports.', columns: ['customer_id','first_name','last_name','email','address_id','active','create_date','last_update','provider_id','date_of_birth','gender'], pk: ['customer_id'], fk: { address_id: ['address','address_id'], provider_id: ['provider','provider_id'] } },
+      { name: 'distributor', group: 'catalog', kind: 'Catalog', purpose: 'A company that distributes films. A film belongs to one distributor.', columns: ['distributor_id','name','last_update'], pk: ['distributor_id'] },
+      { name: 'film', group: 'catalog', kind: 'Catalog', purpose: 'One title in the streaming catalog. This is the core table for film details.', columns: ['film_id','title','rating','description','release_date','language_iso_639_1','popularity','revenue','runtime','distributor_id','imdb_score','last_update'], pk: ['film_id'], fk: { language_iso_639_1: ['language','language_iso_639_1'], distributor_id: ['distributor','distributor_id'] } },
+      { name: 'film_actor', group: 'catalog', kind: 'Junction', purpose: 'Connects films and actors. Each row represents one actor’s character in one film.', columns: ['actor_id','film_id','character','last_update'], pk: ['actor_id','film_id'], fk: { actor_id: ['actor','actor_id'], film_id: ['film','film_id'] } },
+      { name: 'film_category', group: 'catalog', kind: 'Junction', purpose: 'Connects films and categories. It allows a film to have more than one category.', columns: ['film_id','category_id','last_update'], pk: ['film_id','category_id'], fk: { film_id: ['film','film_id'], category_id: ['category','category_id'] } },
+      { name: 'inventory', group: 'catalog', kind: 'Catalog', purpose: 'A provider’s listing for a film. It connects the provider, the title, and any rental of that listing.', columns: ['inventory_id','film_id','provider_id','last_update'], pk: ['inventory_id'], fk: { film_id: ['film','film_id'], provider_id: ['provider','provider_id'] } },
+      { name: 'language', group: 'catalog', kind: 'Catalog', purpose: 'A language available for a film. Its ISO code is the key used by film.', columns: ['language_iso_639_1','english_name','name','last_update'], pk: ['language_iso_639_1'] },
+      { name: 'promotion', group: 'activity', kind: 'Activity', purpose: 'A promotional code that can be applied to a rental.', columns: ['promotion_id','code','description','discount_type','discount_value','active','last_update'], pk: ['promotion_id'] },
+      { name: 'provider', group: 'people', kind: 'Customer', purpose: 'A streaming provider. It can be connected to a customer, subscription, inventory listing, purchase, or library item.', columns: ['provider_id','provider_name','country','last_update'], pk: ['provider_id'] },
+      { name: 'rental', group: 'activity', kind: 'Activity', purpose: 'One rental event for one provider-title listing. It records dates, amounts, promotion, and payment card.', columns: ['rental_id','customer_id','inventory_id','promotion_id','rental_date','return_date','base_amount','total_amount','card_id','paid_at','last_update'], pk: ['rental_id'], fk: { customer_id: ['customer','customer_id'], inventory_id: ['inventory','inventory_id'], promotion_id: ['promotion','promotion_id'], card_id: ['credit_card','card_id'] } },
+      { name: 'subscription', group: 'activity', kind: 'Activity', purpose: 'A customer’s plan with a provider, including price, status, dates, and payment card.', columns: ['subscription_id','customer_id','provider_id','card_id','plan_name','monthly_price','status','start_date','end_date','last_update'], pk: ['subscription_id'], fk: { customer_id: ['customer','customer_id'], provider_id: ['provider','provider_id'], card_id: ['credit_card','card_id'] } },
+      { name: 'purchase', group: 'activity', kind: 'Activity', purpose: 'The header for one customer purchase. The individual films are in purchase_item.', columns: ['purchase_id','customer_id','provider_id','card_id','purchase_date','status','purchase_total','last_update'], pk: ['purchase_id'], fk: { customer_id: ['customer','customer_id'], provider_id: ['provider','provider_id'], card_id: ['credit_card','card_id'] } },
+      { name: 'purchase_item', group: 'activity', kind: 'Activity', purpose: 'One film line on a purchase. This table is how one purchase can include several films.', columns: ['purchase_item_id','purchase_id','film_id','unit_price','last_update'], pk: ['purchase_item_id'], fk: { purchase_id: ['purchase','purchase_id'], film_id: ['film','film_id'] } },
+      { name: 'customer_library', group: 'activity', kind: 'Activity', purpose: 'A film that a customer can access in their library. It can point back to the purchase that gave the access.', columns: ['library_id','customer_id','film_id','provider_id','purchase_id','acquired_date','status','last_update'], pk: ['library_id'], fk: { customer_id: ['customer','customer_id'], film_id: ['film','film_id'], provider_id: ['provider','provider_id'], purchase_id: ['purchase','purchase_id'] } }
+    ];
+
+    const views = {
+      all: tables.map(t => t.name),
+      people: ['customer','address','city','country','credit_card','provider','subscription','rental','purchase','customer_library'],
+      catalog: ['film','language','distributor','category','film_category','actor','film_actor','inventory','provider'],
+      rental: ['rental','customer','inventory','film','provider','promotion','credit_card'],
+      purchase: ['purchase','purchase_item','customer_library','customer','film','provider','credit_card']
+    };
+
+    const edges = tables.flatMap(table => Object.entries(table.fk || {}).map(([fromColumn, [to, toColumn]]) => ({ from: table.name, fromColumn, to, toColumn })));
+    const cards = document.getElementById('cards');
+    const svg = document.getElementById('connections');
+    const diagram = document.getElementById('diagram');
+    const detail = document.getElementById('detail');
+    const search = document.getElementById('search');
+    const status = document.getElementById('status');
+    let filter = 'all';
+    let selected = null;
+
+    function keyType(table, field) {
+      const primary = table.pk.includes(field);
+      const foreign = !!(table.fk && table.fk[field]);
+      return primary && foreign ? 'both' : primary ? 'pk' : foreign ? 'fk' : '';
+    }
+
+    function renderCards() {
+      cards.innerHTML = tables.map(table => {
+        const fields = table.columns.map(field => {
+          const kind = keyType(table, field);
+          const label = kind === 'both' ? 'PK/FK' : kind ? kind.toUpperCase() : '·';
+          return `<div class="field"><span class="field-key ${kind}">${label}</span><span class="field-name">${field}</span></div>`;
+        }).join('');
+        return `<button class="table-card" type="button" data-table="${table.name}" aria-label="Open details for ${table.name}"><span class="table-head ${table.group}"><span class="table-name">${table.name}</span><span class="table-kind">${table.kind}</span></span><span class="table-fields">${fields}</span></button>`;
+      }).join('');
+      cards.querySelectorAll('.table-card').forEach(card => card.addEventListener('click', () => selectTable(card.dataset.table)));
+    }
+
+    function isVisible(table) {
+      const query = search.value.trim().toLowerCase();
+      const inView = views[filter].includes(table.name);
+      const matches = !query || [table.name, table.purpose, ...table.columns].join(' ').toLowerCase().includes(query);
+      return inView && matches;
+    }
+
+    function selectTable(name) {
+      selected = name;
+      update();
+      const table = tables.find(t => t.name === name);
+      const related = edges.filter(e => e.from === name || e.to === name);
+      const sourceConnections = related.map(e => {
+        const other = e.from === name ? e.to : e.from;
+        const ownColumn = e.from === name ? e.fromColumn : e.toColumn;
+        const otherColumn = e.from === name ? e.toColumn : e.fromColumn;
+        return `<li><code>${ownColumn}</code> connects to <button class="text-link" data-jump="${other}">${other}.${otherColumn}</button></li>`;
+      }).join('') || '<li>This table does not contain a foreign key.</li>';
+      detail.innerHTML = `<p class="detail-kicker">${table.kind} table</p><h2 class="detail-name">${table.name}</h2><p>${table.purpose}</p><h3>Exact join connections</h3><ul class="connection-list">${sourceConnections}</ul>`;
+      detail.querySelectorAll('[data-jump]').forEach(button => {
+        button.style.cssText = 'border:0;padding:0;color:#0b5cad;background:transparent;font:inherit;font-weight:700;cursor:pointer;text-decoration:underline;';
+        button.addEventListener('click', () => selectTable(button.dataset.jump));
+      });
+      detail.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    }
+
+    function update() {
+      const visibleNames = new Set(tables.filter(isVisible).map(t => t.name));
+      const connected = new Set();
+      if (selected) {
+        connected.add(selected);
+        edges.forEach(edge => { if (edge.from === selected) connected.add(edge.to); if (edge.to === selected) connected.add(edge.from); });
+      }
+      cards.querySelectorAll('.table-card').forEach(card => {
+        const name = card.dataset.table;
+        card.classList.toggle('is-hidden', !visibleNames.has(name));
+        card.classList.toggle('is-selected', name === selected);
+        card.classList.toggle('is-muted', !!selected && visibleNames.has(name) && !connected.has(name));
+      });
+      const visibleCount = visibleNames.size;
+      status.textContent = `${visibleCount} ${visibleCount === 1 ? 'table' : 'tables'} shown${search.value.trim() ? ` for “${search.value.trim()}”` : ''}. Click any table for its purpose and join details.`;
+      requestAnimationFrame(() => drawEdges(visibleNames));
+    }
+
+    function drawEdges(visibleNames) {
+      const diagramRect = diagram.getBoundingClientRect();
+      const scrollLeft = diagram.scrollLeft;
+      const scrollTop = diagram.scrollTop;
+      svg.innerHTML = '';
+      svg.setAttribute('viewBox', `0 0 ${diagram.scrollWidth} ${diagram.scrollHeight}`);
+      svg.setAttribute('width', diagram.scrollWidth);
+      svg.setAttribute('height', diagram.scrollHeight);
+      edges.filter(edge => visibleNames.has(edge.from) && visibleNames.has(edge.to)).forEach(edge => {
+        const from = cards.querySelector(`[data-table="${edge.from}"]`).getBoundingClientRect();
+        const to = cards.querySelector(`[data-table="${edge.to}"]`).getBoundingClientRect();
+        const x1 = from.left - diagramRect.left + scrollLeft + from.width / 2;
+        const y1 = from.top - diagramRect.top + scrollTop + from.height / 2;
+        const x2 = to.left - diagramRect.left + scrollLeft + to.width / 2;
+        const y2 = to.top - diagramRect.top + scrollTop + to.height / 2;
+        const bend = Math.max(38, Math.min(130, Math.abs(x2 - x1) * .38));
+        const direction = x2 >= x1 ? 1 : -1;
+        const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+        path.setAttribute('d', `M ${x1} ${y1} C ${x1 + bend * direction} ${y1}, ${x2 - bend * direction} ${y2}, ${x2} ${y2}`);
+        path.setAttribute('class', `edge ${selected && (edge.from === selected || edge.to === selected) ? 'highlight' : ''}`);
+        svg.appendChild(path);
+      });
+    }
+
+    document.querySelectorAll('.filter').forEach(button => button.addEventListener('click', () => {
+      filter = button.dataset.filter;
+      document.querySelectorAll('.filter').forEach(item => item.setAttribute('aria-pressed', item === button ? 'true' : 'false'));
+      update();
+    }));
+    search.addEventListener('input', update);
+    window.addEventListener('resize', () => requestAnimationFrame(() => drawEdges(new Set(tables.filter(isVisible).map(t => t.name)))));
+
+    renderCards();
+    update();
+  </script>
+</body>
+</html>
