@@ -18,6 +18,7 @@ with st.sidebar:
     port = st.number_input("Port", 1, 65535, 3306)
     user = st.text_input("MySQL username", "root")
     password = st.text_input("MySQL password", type="password")
+    st.caption("Use the password from your MySQL installation. If you do not remember it, review the MySQL installation assignments and the course's suggested password.")
 
 
 def connect():
