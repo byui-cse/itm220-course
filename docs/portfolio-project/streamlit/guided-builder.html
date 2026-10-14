@@ -1,0 +1,107 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Guided Project App Builder</title><link rel="stylesheet" href="style.css"></head>
+<body><header><div><h1>Guided Project App Builder</h1><p class="lead">Move from the Puppies demo to your own database one small, testable step at a time.</p></div></header>
+<main><nav><a href="index.html">Start Here</a><a href="set-up-once.html">Set Up Once</a><a href="puppies-walkthrough.html">Puppies Walkthrough</a><a href="plan-your-app.html">Plan Your App</a><a href="guided-builder.html">Guided Builder</a><a href="build-your-app.html">Build Your App</a><a href="quick-help.html">Quick Help</a></nav>
+
+<div class="notice"><strong>Do not start a new app from a blank file.</strong> You will reuse a working starter, supply only your project details, and test each checkpoint before you continue.</div>
+
+<h2>Where you are in the path</h2><ol class="steps"><li><strong>Setup works:</strong> the Puppies page says it connected to MySQL.</li><li><strong>Demo works:</strong> you searched for a puppy’s tricks, added a breed, and saw it in the results.</li><li><strong>Your SQL works:</strong> you tested one insert, one list query, and one filtered portfolio query in MySQL.</li><li><strong>Now:</strong> use the form below to create the only part of the starter file you need to personalize.</li></ol>
+
+<h2>Checkpoint A — choose an easy first interaction</h2><p>Pick <strong>one table</strong> where a person can add a row without needing a complicated series of related records first. A lookup or parent table is often a good first choice. You can still show that your design is connected by making your list query show a readable value from a related table.</p>
+<table><thead><tr><th>Before you continue, have this ready</th><th>Example of what “ready” means</th></tr></thead><tbody><tr><td>A one-sentence user action</td><td>“A coordinator can add an event so members can find it later.”</td></tr><tr><td>A tested insert</td><td>The insert works in MySQL before it goes into Streamlit.</td></tr><tr><td>A tested list query</td><td>The list shows the new row; a join can replace an ID with a readable value.</td></tr><tr><td>A tested filtered query</td><td>One <code>%s</code> placeholder receives a value from the app’s text box.</td></tr></tbody></table>
+<p>If you do not have these yet, return to <a href="plan-your-app.html">Plan Your App</a>. This builder does not invent table or column names.</p>
+
+<h2>Checkpoint B — create your project settings</h2><p>Fill in this form from SQL that already works. Nothing you type here leaves your browser. Select <strong>Generate project settings</strong>, then copy the result into the starter file.</p>
+<div class="form-grid">
+  <div><label for="appTitle">App title</label><input id="appTitle" value="My Project Database"></div>
+  <div><label for="filterLabel">Text-box label for the query</label><input id="filterLabel" placeholder="Event name contains"></div>
+  <div class="wide"><label for="appDescription">One-sentence description for the user</label><input id="appDescription" placeholder="Add one event and explore upcoming activities."></div>
+  <div class="wide"><label for="fields">Form fields — one per line, written as <code>column_name | Helpful label</code></label><textarea id="fields" placeholder="event_name | Event name&#10;event_date | Event date"></textarea></div>
+  <div class="wide"><label for="insertSql">Tested INSERT SQL</label><textarea id="insertSql" placeholder="INSERT INTO event (event_name, event_date) VALUES (%s, %s);"></textarea></div>
+  <div class="wide"><label for="listSql">Tested list SQL</label><textarea id="listSql" placeholder="SELECT event_name, event_date FROM event ORDER BY event_date;"></textarea></div>
+  <div><label for="filterMode">How does the filter work?</label><select id="filterMode"><option value="contains">Contains text (LIKE %s)</option><option value="exact">Exact value (= %s)</option></select></div>
+  <div class="wide"><label for="filterSql">Tested filtered-query SQL — exactly one <code>%s</code></label><textarea id="filterSql" placeholder="SELECT event_name, event_date FROM event WHERE event_name LIKE %s ORDER BY event_date;"></textarea></div>
+</div>
+<button type="button" id="generate">Generate project settings</button><button type="button" id="copy" disabled>Copy settings</button>
+<p id="message" role="alert" class="text-destructive"></p>
+<div class="output"><label for="result">Your project settings</label><textarea id="result" readonly aria-live="polite" placeholder="Your generated settings will appear here."></textarea></div>
+
+<h2>Checkpoint C — put the settings in the starter</h2><ol><li>Download <a href="starter-files/project_app_starter.py" download>project_app_starter.py</a>, place it in your Streamlit folder, and rename it <code>project_app.py</code>.</li><li>Open it in VS Code. Near the top, find the area between <strong>YOUR PROJECT SETTINGS</strong> and <strong>Supplied app structure</strong>.</li><li>Replace only the settings inside that area with the generated settings above. Do not delete the imports or any code below the second divider.</li><li>Save the file. Continue to <a href="build-your-app.html">Build Your App</a> for the run-and-test checklist.</li></ol>
+<div class="tip"><strong>Use AI after your plan—not before it.</strong> If you ask an AI tool for help, paste your tested SQL and relevant <code>CREATE TABLE</code> statements. Ask it to check your generated settings against those exact identifiers. Do not ask it to design an entire app for you.</div>
+</main><footer>ITM 220 &middot; Draft resource for review</footer>
+<script>
+  const get = id => document.getElementById(id);
+  const message = get('message');
+  const result = get('result');
+  const copy = get('copy');
+
+  function asTripleQuoted(value) {
+    return '"""' + value.trim().replaceAll('"""', '\\\"\\\"\\\"') + '"""';
+  }
+
+  get('generate').addEventListener('click', () => {
+    const lines = get('fields').value.split('\n').map(line => line.trim()).filter(Boolean);
+    const fields = [];
+    for (const line of lines) {
+      const parts = line.split('|').map(part => part.trim());
+      if (parts.length !== 2 || !parts[0] || !parts[1]) {
+        message.textContent = 'Write each form field as: column_name | Helpful label';
+        result.value = '';
+        copy.disabled = true;
+        return;
+      }
+      fields.push({ column: parts[0], label: parts[1] });
+    }
+
+    const insertSql = get('insertSql').value.trim();
+    const listSql = get('listSql').value.trim();
+    const filterSql = get('filterSql').value.trim();
+    if (!fields.length || !insertSql || !listSql || !filterSql || !get('filterLabel').value.trim()) {
+      message.textContent = 'Complete every field before generating your settings.';
+      result.value = '';
+      copy.disabled = true;
+      return;
+    }
+    if ((filterSql.match(/%s/g) || []).length !== 1) {
+      message.textContent = 'Your filtered-query SQL needs exactly one %s placeholder.';
+      result.value = '';
+      copy.disabled = true;
+      return;
+    }
+    if ((insertSql.match(/%s/g) || []).length !== fields.length) {
+      message.textContent = 'Your INSERT SQL needs one %s placeholder for every form field.';
+      result.value = '';
+      copy.disabled = true;
+      return;
+    }
+    message.textContent = '';
+    result.value = [
+      `APP_TITLE = ${JSON.stringify(get('appTitle').value.trim())}`,
+      `APP_DESCRIPTION = ${JSON.stringify(get('appDescription').value.trim())}`,
+      '',
+      `INPUT_FIELDS = ${JSON.stringify(fields, null, 4)}`,
+      '',
+      `INSERT_SQL = ${asTripleQuoted(insertSql)}`,
+      '',
+      `LIST_SQL = ${asTripleQuoted(listSql)}`,
+      '',
+      `FILTER_LABEL = ${JSON.stringify(get('filterLabel').value.trim())}`,
+      `FILTER_MODE = ${JSON.stringify(get('filterMode').value)}`,
+      `FILTER_SQL = ${asTripleQuoted(filterSql)}`
+    ].join('\n');
+    copy.disabled = false;
+  });
+
+  copy.addEventListener('click', async () => {
+    try {
+      await navigator.clipboard.writeText(result.value);
+      message.className = '';
+      message.textContent = 'Settings copied. Paste them into the starter file’s project-settings area.';
+    } catch {
+      result.focus();
+      result.select();
+      message.className = '';
+      message.textContent = 'Select the generated text and copy it manually.';
+    }
+  });
+</script></body></html>

@@ -9,7 +9,9 @@ import mysql.connector
 import streamlit as st
 
 # ============================================================================
-# YOUR PROJECT SETTINGS — change only this section.
+# YOUR PROJECT SETTINGS — change only this section. The Guided Project App
+# Builder creates this block from SQL that you have already tested:
+# https://byui-cse.github.io/itm220-course/portfolio-project/streamlit/guided-builder.html
 # ============================================================================
 APP_TITLE = "My Project Database"
 APP_DESCRIPTION = "Add one record and explore a useful result."
