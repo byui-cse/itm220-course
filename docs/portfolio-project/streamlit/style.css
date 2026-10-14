@@ -1,0 +1,31 @@
+:root { --navy:#153b5b; --blue:#1f6f9f; --light:#eef6fa; --ink:#17222d; --muted:#536372; --line:#d5e0e8; --accent:#a44c18; }
+* { box-sizing:border-box; }
+body { margin:0; font-family:Arial, Helvetica, sans-serif; color:var(--ink); background:#f7fafc; line-height:1.55; }
+header { background:var(--navy); color:white; padding:2.5rem 1.25rem 2rem; }
+header > div, main, footer { max-width:960px; margin:auto; }
+h1 { font-size:clamp(1.9rem,4vw,2.8rem); margin:0 0 .6rem; line-height:1.15; }
+h2 { color:var(--navy); margin-top:2rem; }
+h3 { color:var(--blue); margin-top:1.4rem; }
+p.lead { font-size:1.2rem; max-width:760px; margin:.2rem 0; }
+main { background:white; padding:1.25rem 2rem 3rem; min-height:72vh; }
+nav { font-size:.95rem; padding:.8rem 0; border-bottom:1px solid var(--line); }
+nav a { color:var(--navy); margin-right:1rem; white-space:nowrap; }
+a { color:#075f99; }
+.notice, .tip { padding:1rem 1.15rem; border-radius:7px; margin:1.25rem 0; }
+.notice { background:#fff6e9; border-left:5px solid var(--accent); }
+.tip { background:var(--light); border-left:5px solid var(--blue); }
+.steps { counter-reset:steps; padding-left:0; list-style:none; }
+.steps > li { counter-increment:steps; padding:.6rem 0 .6rem 3rem; position:relative; border-bottom:1px solid var(--line); }
+.steps > li::before { content:counter(steps); position:absolute; left:0; top:.58rem; width:2rem; height:2rem; border-radius:50%; color:white; background:var(--blue); text-align:center; line-height:2rem; font-weight:bold; }
+.cards { display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:1rem; margin:1.25rem 0; }
+.card { border:1px solid var(--line); border-radius:9px; padding:1.2rem; background:white; box-shadow:0 1px 3px #0000000b; }
+.card h3 { margin-top:0; }
+.button { display:inline-block; background:var(--blue); color:white; border-radius:5px; padding:.65rem .9rem; margin-top:.5rem; text-decoration:none; font-weight:bold; }
+code, pre { font-family:Consolas, "Courier New", monospace; }
+code { background:#f1f4f6; padding:.1rem .25rem; border-radius:3px; }
+pre { background:#142331; color:#eef6fa; border-radius:7px; padding:1rem; overflow:auto; white-space:pre-wrap; }
+table { border-collapse:collapse; width:100%; margin:1rem 0; }
+th,td { border:1px solid var(--line); padding:.65rem; text-align:left; vertical-align:top; }
+th { background:var(--light); }
+footer { color:var(--muted); padding:1.5rem 1.25rem 2.5rem; font-size:.92rem; }
+@media (max-width:650px) { main { padding:1rem 1.1rem 2rem; } nav a { display:inline-block; margin:.25rem .6rem .25rem 0; } }
