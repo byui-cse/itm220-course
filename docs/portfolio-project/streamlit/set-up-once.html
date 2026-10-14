@@ -15,12 +15,12 @@
 
 <h2>3. Follow one path for your computer</h2><p>Copy one command at a time into the terminal, press Enter, and wait for it to finish before entering the next command.</p>
 
-<section class="card"><h3>Windows 10 or 11</h3><p>First, check which Python command your computer recognizes:</p><pre>py --version</pre><p>If that reports Python, use the commands below. If it does not, try <code>python --version</code> and replace only the first command below with <code>python -m venv .venv</code>.</p><pre>py -3 -m venv .venv
+<section class="card"><h3>Windows 10 or 11</h3><p>First, check which Python command your computer recognizes:</p><pre>py --version</pre><p>The version must be <strong>3.10 through 3.14</strong>. If it reports 3.9 or earlier, install a current Python 3 release before continuing. If <code>py</code> is not recognized, try <code>python --version</code>. If that reports a supported version, replace only the first command below with <code>python -m venv .venv</code>.</p><pre>py -3 -m venv .venv
 .\.venv\Scripts\python.exe -m pip install --upgrade pip
 .\.venv\Scripts\python.exe -m pip install streamlit mysql-connector-python
 .\.venv\Scripts\python.exe -m streamlit run puppies_frontend_demo.py</pre><p>The last command should open a page in your browser. Leave the terminal running while you use the page.</p></section>
 
-<section class="card"><h3>macOS</h3><p>First, check that Python is available:</p><pre>python3 --version</pre><p>Then run:</p><pre>python3 -m venv .venv
+<section class="card"><h3>macOS</h3><p>First, check that Python is available:</p><pre>python3 --version</pre><p>The version must be <strong>3.10 through 3.14</strong>. If it reports 3.9 or earlier, install a current Python 3 release before continuing.</p><p>Then run:</p><pre>python3 -m venv .venv
 ./.venv/bin/python -m pip install --upgrade pip
 ./.venv/bin/python -m pip install streamlit mysql-connector-python
 ./.venv/bin/python -m streamlit run puppies_frontend_demo.py</pre><p>The last command should open a page in your browser. Leave the terminal running while you use the page.</p><p>If the package installation reports that Apple command-line developer tools are missing, run <code>xcode-select --install</code>, finish Apple’s installation prompt, reopen VS Code, and repeat the package-install command.</p></section>
